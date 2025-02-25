@@ -166,9 +166,9 @@ for name in nodeList:
     # interfaces.append(iface2)
 
     # Host interfaces
-    iface3 = node.addInterface("if2")
-    iface3.addAddress(pg.IPv4Address(str(next(addrs)), str(subnet.netmask)))
-    interfaces.append(iface3
+    #iface3 = node.addInterface("if2")
+    #iface3.addAddress(pg.IPv4Address(str(next(addrs)), str(subnet.netmask)))
+    #interfaces.append(iface3
                      )
 ###################################################
 # The part below is from Ezra's "stiching" script!
