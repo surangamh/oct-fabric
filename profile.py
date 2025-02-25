@@ -145,25 +145,25 @@ for name in nodeList:
     node.addService(pg.Execute(shell="bash", command="sudo /local/repository/post-boot.sh " + params.toolVersion + " >> /local/repository/output_log.txt"))
 
     # Since we want to create network links to the FPGA, it has its own identity.
-    #fpga = request.RawPC("fpga-" + name)
+    fpga = request.RawPC("fpga-" + name)
     # UMass cluster
-    #fpga.component_manager_id = "urn:publicid:IDN+cloudlab.umass.edu+authority+cm"
+    fpga.component_manager_id = "urn:publicid:IDN+cloudlab.umass.edu+authority+cm"
     # Assign to the fgpa node
-    #fpga.component_id = "fpga-" + name
+    fpga.component_id = "fpga-" + name
     # Use the default image for the type of the node selected.
-    #fpga.setUseTypeDefaultImage()
+    fpga.setUseTypeDefaultImage()
     
     # Secret sauce.
-    #fpga.SubNodeOf(node)
+    fpga.SubNodeOf(node)
 
     # FPGA interfaces
-    #iface1 = fpga.addInterface("if0")
-    # iface2 = fpga.addInterface("if1")
+    iface1 = fpga.addInterface("if0")
+    iface2 = fpga.addInterface("if1")
     # Must specify the IPv4 address on all stitched links
-    #iface1.addAddress(pg.IPv4Address(str(next(addrs)), str(subnet.netmask)))
-    # iface2.addAddress(pg.IPv4Address(str(next(addrs)), str(subnet.netmask)))
-    #interfaces.append(iface1)
-    # interfaces.append(iface2)
+    iface1.addAddress(pg.IPv4Address(str(next(addrs)), str(subnet.netmask)))
+    iface2.addAddress(pg.IPv4Address(str(next(addrs)), str(subnet.netmask)))
+    interfaces.append(iface1)
+    interfaces.append(iface2)
 
     # Host interfaces
     iface3 = node.addInterface("if2")
