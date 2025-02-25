@@ -168,8 +168,7 @@ for name in nodeList:
     # Host interfaces
     #iface3 = node.addInterface("if2")
     #iface3.addAddress(pg.IPv4Address(str(next(addrs)), str(subnet.netmask)))
-    #interfaces.append(iface3
-                     )
+    #interfaces.append(iface3)
 ###################################################
 # The part below is from Ezra's "stiching" script!
 
