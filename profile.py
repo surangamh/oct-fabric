@@ -154,7 +154,7 @@ for name in nodeList:
     fpga.setUseTypeDefaultImage()
     
     # Secret sauce.
-    fpga.SubNodeOf(node)
+    #fpga.SubNodeOf(node)
 
     # FPGA interfaces
     iface1 = fpga.addInterface("if0")
