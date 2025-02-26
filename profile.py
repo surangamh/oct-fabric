@@ -121,7 +121,7 @@ addrs = subnet.hosts()
 
 # Process nodes, adding to FPGA network
 nodeList = params.nodes.split(',')
-i = 0
+idx = 0
 for name in nodeList:
     # Create a node and add it to the request
     node = request.RawPC(name)
@@ -157,18 +157,28 @@ for name in nodeList:
     fpga.SubNodeOf(node)
 
     # FPGA interfaces
-    iface1 = fpga.addInterface("if0")
-    iface2 = fpga.addInterface("if1")
+    #iface1 = fpga.addInterface("if0")
+    #iface2 = fpga.addInterface("if1")
     # Must specify the IPv4 address on all stitched links
-    iface1.addAddress(pg.IPv4Address(str(next(addrs)), str(subnet.netmask)))
-    iface2.addAddress(pg.IPv4Address(str(next(addrs)), str(subnet.netmask)))
+    #iface1.addAddress(pg.IPv4Address(str(next(addrs)), str(subnet.netmask)))
+    #iface2.addAddress(pg.IPv4Address(str(next(addrs)), str(subnet.netmask)))
+
+    iface1 = fpga.addInterface()
+    iface1.component_id = "eth0"
+    iface1.addAddress(pg.IPv4Address("192.168.1." + str(idx+10), "255.255.255.0"))
+    iface2 = fpga.addInterface()
+    iface2.component_id = "eth1"
+    iface2.addAddress(pg.IPv4Address("192.168.1." + str(idx+20), "255.255.255.0"))
+
     interfaces.append(iface1)
     interfaces.append(iface2)
 
     # Host interfaces
-    iface3 = node.addInterface("if2")
-    iface3.addAddress(pg.IPv4Address(str(next(addrs)), str(subnet.netmask)))
-    interfaces.append(iface3)
+    #iface3 = node.addInterface("if2")
+    #iface3.addAddress(pg.IPv4Address(str(next(addrs)), str(subnet.netmask)))
+    #interfaces.append(iface3)
+
+    idx = idx + 1
 ###################################################
 # The part below is from Ezra's "stiching" script!
 
