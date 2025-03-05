@@ -176,8 +176,8 @@ for name in nodeList:
     iface2.component_id = "eth1"
     iface2.addAddress(pg.IPv4Address("192.168.2." + str(idx+10), "255.255.255.0"))
 
-    interfaces.append(iface1)
-    interfaces.append(iface2)
+    interfaces_vlan1.append(iface1)
+    interfaces_vlan2.append(iface2)
 
     # Host interfaces
     #iface3 = node.addInterface("if2")
