@@ -123,8 +123,8 @@ pc.verifyParameters()
 
 # Make a LAN
 if params.node_count == 1:
-    lan1 = request.Link("link", "vlan1")
-    lan2 = request.Link("link", "vlan2")
+    lan1 = request.Link("link1", "vlan1")
+    lan2 = request.Link("link2", "vlan2")
 else:
     lan = request.LAN()
 
