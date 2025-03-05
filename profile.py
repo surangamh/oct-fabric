@@ -214,8 +214,8 @@ fabric.exclusive = False
 siface1 = fabric.addInterface("if0")
 siface2 = fabric.addInterface("if1")
 # Specify the IPv4 address
-siface1.addAddress(pg.IPv4Address("192.168.1." + str(idx+50), "255.255.255.0"))
-siface2.addAddress(pg.IPv4Address("192.168.2." + str(idx+50), "255.255.255.0"))
+siface1.addAddress(pg.IPv4Address(str(next(addrs1)), str(subnet1.netmask)))
+siface2.addAddress(pg.IPv4Address(str(next(addrs2)), str(subnet2.netmask)))
 interfaces_vlan1.append(siface1)
 interfaces_vlan2.append(siface2)
 
