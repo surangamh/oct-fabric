@@ -83,7 +83,8 @@ params = pc.bindParameters()
 # parameterize the vlan to use
 portal.context.defineParameter("vlan1", "VLAN1 ID", portal.ParameterType.INTEGER, 3110)
 portal.context.defineParameter("vlan2", "VLAN2 ID", portal.ParameterType.INTEGER, 3111)
-portal.context.defineParameter("ip_subnet", "IP_SUBNET", portal.ParameterType.STRING, "192.168.1.0/24")
+portal.context.defineParameter("ip1_subnet", "IP1_SUBNET", portal.ParameterType.STRING, "192.168.1.0/24")
+portal.context.defineParameter("ip2_subnet", "IP2_SUBNET", portal.ParameterType.STRING, "192.168.2.0/24")
 portal.context.defineParameter("node_count", "NODE_COUNT", portal.ParameterType.INTEGER, NODE_MIN)
 params = portal.context.bindParameters()
 
@@ -103,13 +104,21 @@ if params.vlan2 < VLAN_MIN or params.vlan2 > VLAN_MAX:
     portal.context.reportError( portal.ParameterError( "VLAN ID must be in the range {}-{}".format(VLAN_MIN, VLAN_MAX) ) )
 
 try:
-    subnet = IPv4Network(unicode(params.ip_subnet))
+    subnet1 = IPv4Network(unicode(params.ip1_subnet))
 except Exception as e:
     try:
-        subnet = IPv6Network(unicode(params.ip_subnet))
+        subnet1 = IPv6Network(unicode(params.ip1_subnet))
     except Exception as e:
         raise e
-  
+
+try:
+    subnet2 = IPv4Network(unicode(params.ip2_subnet))
+except Exception as e:
+    try:
+        subnet2 = IPv6Network(unicode(params.ip2_subnet))
+    except Exception as e:
+        raise e
+
 pc.verifyParameters()
 
 # Make a LAN
@@ -123,7 +132,8 @@ interfaces_vlan1 = list()
 interfaces_vlan2 = list()
 
 # Request nodes at one of the Utah clusters (Cloudlab Utah, Emulab, APT)
-addrs = subnet.hosts()
+addrs1 = subnet1.hosts()
+addrs2 = subnet2.hosts()
 
 # Process nodes, adding to FPGA network
 nodeList = params.nodes.split(',')
