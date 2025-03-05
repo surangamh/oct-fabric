@@ -221,10 +221,10 @@ for iface in interfaces_vlan2:
 
 # Many nodes have a single physical experimental interface, so use
 # link multiplexing to make sure it maps to any node.
-lan.link_multiplexing = True;
-
+lan1.link_multiplexing = True;
+lan2.link_multiplexing = True;
 # Use best effort on stitched links.
-lan.best_effort = True;
-
+lan1.best_effort = True;
+lan2.best_effort = True;
 # Print the RSpec to the enclosing page.
 pc.printRequestRSpec(request)
