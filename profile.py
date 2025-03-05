@@ -81,7 +81,8 @@ pc.defineParameter("tempFileSystemMount", "Temporary Filesystem Mount Point",
 params = pc.bindParameters()
 
 # parameterize the vlan to use
-portal.context.defineParameter("vlan", "VLAN ID", portal.ParameterType.INTEGER, 3110)
+portal.context.defineParameter("vlan1", "VLAN1 ID", portal.ParameterType.INTEGER, 3110)
+portal.context.defineParameter("vlan2", "VLAN2 ID", portal.ParameterType.INTEGER, 3111)
 portal.context.defineParameter("ip_subnet", "IP_SUBNET", portal.ParameterType.STRING, "192.168.1.0/24")
 portal.context.defineParameter("node_count", "NODE_COUNT", portal.ParameterType.INTEGER, NODE_MIN)
 params = portal.context.bindParameters()
@@ -95,7 +96,10 @@ if params.osImage == "urn:publicid:IDN+emulab.net+image+emulab-ops//CENTOS8-64-S
     pc.reportError(portal.ParameterError("OS and tool version mismatch.", ["osImage"]))
     pass
     
-if params.vlan < VLAN_MIN or params.vlan > VLAN_MAX:
+if params.vlan1 < VLAN_MIN or params.vlan1 > VLAN_MAX:
+    portal.context.reportError( portal.ParameterError( "VLAN ID must be in the range {}-{}".format(VLAN_MIN, VLAN_MAX) ) )
+
+if params.vlan2 < VLAN_MIN or params.vlan2 > VLAN_MAX:
     portal.context.reportError( portal.ParameterError( "VLAN ID must be in the range {}-{}".format(VLAN_MIN, VLAN_MAX) ) )
 
 try:
@@ -110,11 +114,13 @@ pc.verifyParameters()
 
 # Make a LAN
 if params.node_count == 1:
-    lan = request.Link("link", "vlan")
+    lan1 = request.Link("link", "vlan1")
+    lan2 = request.Link("link", "vlan2")
 else:
     lan = request.LAN()
 
-interfaces = list()
+interfaces_vlan1 = list()
+interfaces_vlan2 = list()
 
 # Request nodes at one of the Utah clusters (Cloudlab Utah, Emulab, APT)
 addrs = subnet.hosts()
@@ -168,7 +174,7 @@ for name in nodeList:
     iface1.addAddress(pg.IPv4Address("192.168.1." + str(idx+10), "255.255.255.0"))
     iface2 = fpga.addInterface()
     iface2.component_id = "eth1"
-    iface2.addAddress(pg.IPv4Address("192.168.1." + str(idx+20), "255.255.255.0"))
+    iface2.addAddress(pg.IPv4Address("192.168.2." + str(idx+10), "255.255.255.0"))
 
     interfaces.append(iface1)
     interfaces.append(iface2)
@@ -195,16 +201,23 @@ if (params.cluster == 'urn:publicid:IDN+cloudlab.umass.edu+authority+cm' or
 else:
     fabric.component_manager_id = "urn:publicid:IDN+cloudlab.umass.edu+authority+cm"
 fabric.exclusive = False
-siface = fabric.addInterface("if0")
+siface1 = fabric.addInterface("if0")
+siface2 = fabric.addInterface("if1")
 # Specify the IPv4 address
-siface.addAddress(pg.IPv4Address(str(next(addrs)), str(subnet.netmask)))
-interfaces.append(siface)
+siface1.addAddress(pg.IPv4Address("192.168.1." + str(idx+50), "255.255.255.0"))
+siface2.addAddress(pg.IPv4Address("192.168.2." + str(idx+50), "255.255.255.0"))
+interfaces_vlan1.append(siface1)
+interfaces_vlan2.append(siface2)
 
 # Request one of the allowed tags
-lan.setVlanTag(params.vlan)
+lan1.setVlanTag(params.vlan1)
+lan2.setVlanTag(params.vlan2)
 
-for iface in interfaces:
-    lan.addInterface(iface)
+for iface in interfaces_vlan1:
+    lan1.addInterface(iface)
+
+for iface in interfaces_vlan2:
+    lan2.addInterface(iface)
 
 # Many nodes have a single physical experimental interface, so use
 # link multiplexing to make sure it maps to any node.
